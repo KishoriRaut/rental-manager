@@ -1,0 +1,1 @@
+UNIQUE(tenant_id, billing_month, billing_year)

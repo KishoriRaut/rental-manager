@@ -107,71 +107,96 @@ export default function Houses() {
     <div className="space-y-4 animate-fade-in">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-display font-bold">Houses</h2>
-          <p className="text-muted-foreground text-sm">{houses.length} properties</p>
+          <h2 className="text-responsive-xl font-display font-bold">Houses</h2>
+          <p className="text-muted-foreground text-sm">{houses.length} houses</p>
         </div>
-        <div className="flex gap-2">
-          <div className="relative flex-1 sm:w-64">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input placeholder="Search houses..." className="pl-9" value={search} onChange={e => setSearch(e.target.value)} />
-          </div>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={openNew}><Plus className="mr-2 h-4 w-4" />Add House</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle className="font-display">{editing ? "Edit House" : "Add House"}</DialogTitle>
-                <DialogDescription>
-                  {editing ? "Edit the house information and details." : "Add a new house to the property management system."}
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={e => { e.preventDefault(); save.mutate(); }} className="space-y-4">
-                <div className="space-y-2"><Label>Name</Label><Input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
-                <div className="space-y-2"><Label>Address</Label><Input required value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} /></div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2"><Label>Floors</Label><Input type="number" min={1} required value={form.floors} onChange={e => setForm(f => ({ ...f, floors: +e.target.value }))} /></div>
-                  <div className="space-y-2"><Label>Rooms</Label><Input type="number" min={1} required value={form.rooms} onChange={e => setForm(f => ({ ...f, rooms: +e.target.value }))} /></div>
-                </div>
-                <div className="space-y-2"><Label>Remarks</Label><Textarea value={form.remarks} onChange={e => setForm(f => ({ ...f, remarks: e.target.value }))} /></div>
-                <Button type="submit" className="w-full" disabled={save.isPending}>{save.isPending ? "Saving..." : "Save"}</Button>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="touch-target">
+              <Plus className="h-4 w-4 mr-2" />
+              Add House
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="dialog-responsive max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{editing ? "Edit House" : "Add New House"}</DialogTitle>
+              <DialogDescription>
+                {editing ? "Update house information" : "Add a new house to the system"}
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={e => { e.preventDefault(); save.mutate(); }} className="form-responsive">
+              <div className="form-grid-responsive">
+                <div className="space-y-2"><Label>Name *</Label><Input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
+                <div className="space-y-2"><Label>Address</Label><Input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} /></div>
+                <div className="space-y-2"><Label>Floors</Label><Input type="number" min={1} value={form.floors} onChange={e => setForm(f => ({ ...f, floors: +e.target.value }))} /></div>
+                <div className="space-y-2"><Label>Rooms</Label><Input type="number" min={1} value={form.rooms} onChange={e => setForm(f => ({ ...f, rooms: +e.target.value }))} /></div>
+                <div className="space-y-2"><Label>Remarks</Label><Input value={form.remarks} onChange={e => setForm(f => ({ ...f, remarks: e.target.value }))} /></div>
+              </div>
+              <Button type="submit" className="w-full" disabled={save.isPending}>
+                {save.isPending ? "Saving..." : (editing ? "Update" : "Create")}
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
 
+      {/* Search */}
+      <div className="relative flex-1 min-w-[200px]">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input placeholder="Search by name or address..." className="pl-9" value={search} onChange={e => setSearch(e.target.value)} />
+      </div>
+
+      {/* Table */}
       <Card className="border shadow-sm">
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Address</TableHead>
-                <TableHead className="text-center">Floors</TableHead>
-                <TableHead className="text-center">Rooms</TableHead>
-                <TableHead>Remarks</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.length === 0 ? (
-                <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">{isLoading ? "Loading..." : "No houses found"}</TableCell></TableRow>
-              ) : filtered.map(h => (
-                <TableRow key={h.id}>
-                  <TableCell className="font-medium">{h.name}</TableCell>
-                  <TableCell>{h.address}</TableCell>
-                  <TableCell className="text-center">{h.floors}</TableCell>
-                  <TableCell className="text-center">{h.rooms}</TableCell>
-                  <TableCell className="max-w-[200px] truncate">{h.remarks}</TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="icon" onClick={() => openEdit(h)}><Pencil className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => remove.mutate(h.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
-                  </TableCell>
+          <div className="table-responsive">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead className="hidden sm:table-cell">Address</TableHead>
+                  <TableHead className="text-right hidden xs:table-cell">Floors</TableHead>
+                  <TableHead className="text-right hidden xs:table-cell">Rooms</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filtered.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                      {isLoading ? "Loading..." : "No houses found"}
+                    </TableCell>
+                  </TableRow>
+                ) : filtered.map(h => (
+                  <TableRow key={h.id}>
+                    <TableCell className="font-medium">
+                      <div>
+                        <div className="font-medium">{h.name}</div>
+                        <div className="text-sm text-muted-foreground sm:hidden">{h.address}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">{h.address || "—"}</TableCell>
+                    <TableCell className="text-right hidden xs:table-cell">{h.floors}</TableCell>
+                    <TableCell className="text-right hidden xs:table-cell">{h.rooms}</TableCell>
+                    <TableCell><Badge className={h.is_active ? "status-paid border-0" : "status-unpaid border-0"}>
+                      {h.is_active ? "Active" : "Inactive"}
+                    </Badge></TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex gap-1">
+                        <Button variant="ghost" size="icon" onClick={() => openEdit(h)} className="touch-target">
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => remove.mutate(h.id)} className="touch-target">
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

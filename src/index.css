@@ -79,4 +79,103 @@
   .status-unpaid {
     @apply bg-[hsl(var(--status-unpaid-bg))] text-[hsl(var(--status-unpaid))];
   }
+
+  /* Responsive utilities */
+  .container-responsive {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .card-responsive {
+    @apply bg-card text-card-foreground rounded-lg border shadow-sm;
+  }
+
+  .btn-responsive {
+    @apply px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  /* Mobile-first responsive text */
+  .text-responsive-xs {
+    @apply text-xs sm:text-sm;
+  }
+  
+  .text-responsive-sm {
+    @apply text-sm sm:text-base;
+  }
+  
+  .text-responsive-base {
+    @apply text-base sm:text-lg;
+  }
+  
+  .text-responsive-lg {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+  
+  .text-responsive-xl {
+    @apply text-xl sm:text-2xl lg:text-3xl;
+  }
+
+  /* Responsive spacing */
+  .space-responsive-y-4 {
+    @apply space-y-2 sm:space-y-3 lg:space-y-4;
+  }
+  
+  .space-responsive-y-6 {
+    @apply space-y-3 sm:space-y-4 lg:space-y-6;
+  }
+
+  /* Responsive grid */
+  .grid-responsive-2 {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2;
+  }
+  
+  .grid-responsive-3 {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3;
+  }
+  
+  .grid-responsive-4 {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  }
+
+  /* Mobile-friendly tables */
+  .table-responsive {
+    @apply block overflow-x-auto;
+  }
+  
+  .table-responsive table {
+    @apply min-w-full;
+  }
+
+  /* Mobile-friendly forms */
+  .form-responsive {
+    @apply space-y-4 sm:space-y-6;
+  }
+  
+  .form-grid-responsive {
+    @apply grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  /* Mobile dialogs */
+  .dialog-responsive {
+    @apply w-full max-w-lg mx-auto;
+  }
+  
+  @media (max-width: 640px) {
+    .dialog-responsive {
+      @apply w-full h-full max-w-none rounded-none border-0;
+    }
+  }
+
+  /* Touch-friendly targets */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Safe area for mobile devices */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }

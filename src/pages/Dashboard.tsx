@@ -119,57 +119,59 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div>
-        <h2 className="text-2xl font-display font-bold">Dashboard</h2>
-        <p className="text-muted-foreground">Overview for {now.toLocaleString("default", { month: "long", year: "numeric" })}</p>
+    <div className="space-responsive-y-6 animate-fade-in">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 className="text-responsive-xl font-display font-bold">Dashboard</h2>
+          <p className="text-muted-foreground">Overview for {now.toLocaleString("default", { month: "long", year: "numeric" })}</p>
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {cards.map(c => (
-          <Card key={c.title} className="border shadow-sm">
+          <Card key={c.title} className="card-responsive">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">{c.title}</CardTitle>
               <c.icon className={`h-5 w-5 ${c.color}`} />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold font-display">{c.value}</div>
+              <div className="text-responsive-lg font-bold font-display">{c.value}</div>
             </CardContent>
           </Card>
         ))}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <Card className="border shadow-sm">
+        <Card className="card-responsive">
           <CardContent className="flex items-center gap-4 pt-6">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-status-paid-bg">
               <CheckCircle2 className="h-5 w-5 text-status-paid" />
             </div>
             <div>
-              <p className="text-2xl font-bold font-display">{paidCount}</p>
-              <p className="text-sm text-muted-foreground">Paid Bills</p>
+              <p className="text-responsive-lg font-bold font-display">{paidCount}</p>
+              <p className="text-sm text-muted-foreground">Paid</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="border shadow-sm">
+        <Card className="card-responsive">
           <CardContent className="flex items-center gap-4 pt-6">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-status-partial-bg">
               <Clock className="h-5 w-5 text-status-partial" />
             </div>
             <div>
-              <p className="text-2xl font-bold font-display">{partialCount}</p>
-              <p className="text-sm text-muted-foreground">Partial Bills</p>
+              <p className="text-responsive-lg font-bold font-display">{partialCount}</p>
+              <p className="text-sm text-muted-foreground">Partial</p>
             </div>
           </CardContent>
         </Card>
-        <Card className="border shadow-sm">
+        <Card className="card-responsive">
           <CardContent className="flex items-center gap-4 pt-6">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-status-unpaid-bg">
               <AlertCircle className="h-5 w-5 text-status-unpaid" />
             </div>
             <div>
-              <p className="text-2xl font-bold font-display">{unpaidCount}</p>
-              <p className="text-sm text-muted-foreground">Unpaid Bills</p>
+              <p className="text-responsive-lg font-bold font-display">{unpaidCount}</p>
+              <p className="text-sm text-muted-foreground">Unpaid</p>
             </div>
           </CardContent>
         </Card>

@@ -123,10 +123,10 @@ export default function Tenants() {
         move_in_date: form.move_in_date, is_active: form.is_active, remarks: form.remarks || null,
       };
       if (editing) {
-        const { error } = await supabase.from("tenants").update(payload).eq("id", editing.id);
+        const { error, data } = await supabase.from("tenants").update(payload).eq("id", editing.id).select();
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("tenants").insert({ ...payload, user_id: user!.id });
+        const { error, data } = await supabase.from("tenants").insert({ ...payload, user_id: user!.id }).select();
         if (error) throw error;
       }
     },
@@ -137,7 +137,10 @@ export default function Tenants() {
       setForm(emptyForm);
       toast({ title: editing ? "Tenant updated" : "Tenant added" });
     },
-    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+    onError: (e: any) => {
+      console.error("Tenant save error:", e);
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    },
   });
 
   const remove = useMutation({

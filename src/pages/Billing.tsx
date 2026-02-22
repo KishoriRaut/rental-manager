@@ -257,9 +257,122 @@ export default function Billing() {
                 <Label>Rent Amount (Rs.)</Label>
                 <Input type="number" min={0} value={form.rent_amount} onChange={e => setForm(f => ({ ...f, rent_amount: +e.target.value }))} />
               </div>
+              <div className="rounded-lg border p-3 space-y-3">
+                <Label className="font-semibold">Water Bill</Label>
+                <Select value={form.water_bill_type} onValueChange={v => setForm(f => ({ ...f, water_bill_type: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="fixed">Fixed</SelectItem>
+                    <SelectItem value="lump_sum">Lump Sum</SelectItem>
+                    <SelectItem value="meter_based">Meter Based</SelectItem>
+                  </SelectContent>
+                </Select>
+                {form.water_bill_type === "meter_based" && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label className="text-xs">Units</Label>
+                      <Input type="number" min={0} value={form.water_units} onChange={e => setForm(f => ({ ...f, water_units: +e.target.value }))} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Rate</Label>
+                      <Input type="number" min={0} value={form.water_rate} onChange={e => setForm(f => ({ ...f, water_rate: +e.target.value }))} />
+                    </div>
+                  </div>
+                )}
+                {form.water_bill_type !== "meter_based" && (
+                  <div className="space-y-1">
+                    <Label className="text-xs">Fixed Amount</Label>
+                    <Input type="number" min={0} value={form.water_fixed_amount} onChange={e => setForm(f => ({ ...f, water_fixed_amount: +e.target.value }))} />
+                  </div>
+                )}
+              </div>
+              <div className="rounded-lg border p-3 space-y-3">
+                <Label className="font-semibold">Electricity Bill</Label>
+                <Select value={form.electricity_bill_type} onValueChange={v => setForm(f => ({ ...f, electricity_bill_type: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="fixed">Fixed</SelectItem>
+                    <SelectItem value="meter_based">Meter Based</SelectItem>
+                  </SelectContent>
+                </Select>
+                {form.electricity_bill_type === "meter_based" && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <Label className="text-xs">Units</Label>
+                      <Input type="number" min={0} value={form.electricity_units} onChange={e => setForm(f => ({ ...f, electricity_units: +e.target.value }))} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">Rate</Label>
+                      <Input type="number" min={0} value={form.electricity_rate} onChange={e => setForm(f => ({ ...f, electricity_rate: +e.target.value }))} />
+                    </div>
+                  </div>
+                )}
+                {form.electricity_bill_type !== "meter_based" && (
+                  <div className="space-y-1">
+                    <Label className="text-xs">Fixed Amount</Label>
+                    <Input type="number" min={0} value={form.electricity_fixed_amount} onChange={e => setForm(f => ({ ...f, electricity_fixed_amount: +e.target.value }))} />
+                  </div>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label>Sanitation Charge (Rs.)</Label>
+                <Input type="number" min={0} value={form.sanitation_charge} onChange={e => setForm(f => ({ ...f, sanitation_charge: +e.target.value }))} />
+              </div>
+              <div className="rounded-lg border p-3 space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="font-semibold">Extra Charges</Label>
+                  <Button type="button" variant="outline" size="sm" onClick={() => setForm(f => ({ ...f, extra_charges: [...f.extra_charges, { label: "", amount: 0 }] }))}>
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+                {form.extra_charges.map((ex, i) => (
+                  <div key={i} className="grid grid-cols-3 gap-2">
+                    <Input 
+                      placeholder="Label" 
+                      value={ex.label} 
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        const updated = form.extra_charges.map((item, idx) => 
+                          idx === i ? { ...item, label: e.target.value } : item
+                        );
+                        setForm(f => ({ ...f, extra_charges: updated }));
+                      }} 
+                    />
+                    <Input 
+                      type="number" 
+                      placeholder="Amount" 
+                      value={ex.amount} 
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        const updated = form.extra_charges.map((item, idx) => 
+                          idx === i ? { ...item, amount: +e.target.value } : item
+                        );
+                        setForm(f => ({ ...f, extra_charges: updated }));
+                      }} 
+                    />
+                    <Button type="button" variant="outline" size="sm" onClick={() => setForm(f => ({ ...f, extra_charges: f.extra_charges.filter((_, idx) => idx !== i) }))}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
               <div className="space-y-2">
                 <Label>Paid Amount (Rs.)</Label>
                 <Input type="number" min={0} value={form.paid_amount} onChange={e => setForm(f => ({ ...f, paid_amount: +e.target.value }))} />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label>Payment Date</Label>
+                  <Input type="date" value={form.payment_date} onChange={e => setForm(f => ({ ...f, payment_date: e.target.value }))} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Payment Mode</Label>
+                  <Select value={form.payment_mode} onValueChange={v => setForm(f => ({ ...f, payment_mode: v }))}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="cash">Cash</SelectItem>
+                      <SelectItem value="online">Online</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <div className="rounded-lg bg-muted p-4 text-center">
                 <p className="text-sm text-muted-foreground">Grand Total</p>

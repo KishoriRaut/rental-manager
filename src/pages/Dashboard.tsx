@@ -102,13 +102,13 @@ export default function Dashboard() {
   });
 
   const totalHouses = houses?.length ?? 0;
-  const activeTenants = tenants?.filter(t => t.is_active).length ?? 0;
-  const expectedRent = tenants?.filter(t => t.is_active).reduce((s, t) => s + Number(t.monthly_rent), 0) ?? 0;
-  const collected = billing?.reduce((s, b) => s + Number(b.paid_amount), 0) ?? 0;
-  const totalDue = billing?.reduce((s, b) => s + Number(b.total_amount) - Number(b.paid_amount), 0) ?? 0;
-  const paidCount = billing?.filter(b => b.payment_status === "paid").length ?? 0;
-  const partialCount = billing?.filter(b => b.payment_status === "partial").length ?? 0;
-  const unpaidCount = billing?.filter(b => b.payment_status === "unpaid").length ?? 0;
+  const activeTenants = tenants?.filter(t => t && t.is_active).length ?? 0;
+  const expectedRent = tenants?.filter(t => t && t.is_active).reduce((s, t) => s + Number(t.monthly_rent), 0) ?? 0;
+  const collected = billing?.reduce((s, b) => b && s + Number(b.paid_amount), 0) ?? 0;
+  const totalDue = billing?.reduce((s, b) => b && s + Number(b.total_amount) - Number(b.paid_amount), 0) ?? 0;
+  const paidCount = billing?.filter(b => b && b.payment_status === "paid").length ?? 0;
+  const partialCount = billing?.filter(b => b && b.payment_status === "partial").length ?? 0;
+  const unpaidCount = billing?.filter(b => b && b.payment_status === "unpaid").length ?? 0;
 
   const cards = [
     { title: "Total Houses", value: totalHouses, icon: Building2, color: "text-primary" },

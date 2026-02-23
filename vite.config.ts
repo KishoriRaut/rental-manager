@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => ({
       manifest: {
         name: "RentManager - Property Management",
         short_name: "RentManager",
-        description: "Complete rental property management system",
+        description: "Complete rental property management system with billing, tenants, and houses management",
         theme_color: "#0f172a",
         background_color: "#ffffff",
         display: "standalone",
@@ -64,7 +64,8 @@ export default defineConfig(({ mode }) => ({
           }
         ]
       },
-      strategies: "generateSW"
+      strategies: "generateSW",
+      injectRegister: 'auto'
     })
   ].filter(Boolean),
   resolve: {

@@ -24,80 +24,89 @@ window.fetch = async (...args) => {
   const [url, options] = args;
   const urlStr = typeof url === 'string' ? url : url.toString();
   
-  if (urlStr.includes('127.0.0.1:54321/auth/v1/token?grant_type=refresh_token')) {
-    console.log('Token refresh request initiated');
-  }
-  
-  if (urlStr.includes('127.0.0.1:54321/rest/v1/monthly_billing')) {
-    console.log('Monthly billing request:', { url: urlStr, method: options?.method });
-  }
-  
-  if (urlStr.includes('127.0.0.1:54321/rest/v1/tenants')) {
-    console.log('Tenants request:', { url: urlStr, method: options?.method });
+  // Only add debugging for local development
+  if (urlStr.includes('127.0.0.1:54321')) {
+    if (urlStr.includes('/auth/v1/token?grant_type=refresh_token')) {
+      console.log('Token refresh request initiated');
+    }
+    
+    if (urlStr.includes('/rest/v1/monthly_billing')) {
+      console.log('Monthly billing request:', { url: urlStr, method: options?.method });
+    }
+    
+    if (urlStr.includes('/rest/v1/tenants')) {
+      console.log('Tenants request:', { url: urlStr, method: options?.method });
+    }
   }
   
   try {
     const response = await originalFetch(...args);
     
-    if (urlStr.includes('127.0.0.1:54321/auth/v1/token?grant_type=refresh_token') && !response.ok) {
-      console.warn('Token refresh failed, but continuing with current session:', {
-        status: response.status,
-        statusText: response.statusText
-      });
-      // Don't throw error, let app continue with current session
-      return response;
-    }
-    
-    if (urlStr.includes('127.0.0.1:54321/rest/v1/monthly_billing') && !response.ok) {
-      console.error('Monthly billing request failed:', {
-        status: response.status,
-        statusText: response.statusText,
-        url: urlStr,
-        method: options?.method
-      });
-      
-      // Only return mock response for GET requests (queries), not for POST/PUT/DELETE (mutations)
-      if (response.status === 400 && (!options?.method || options.method === 'GET')) {
-        return new Response(JSON.stringify([]), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' }
+    // Only add error handling for local development
+    if (urlStr.includes('127.0.0.1:54321')) {
+      if (urlStr.includes('/auth/v1/token?grant_type=refresh_token') && !response.ok) {
+        console.warn('Token refresh failed, but continuing with current session:', {
+          status: response.status,
+          statusText: response.statusText
         });
+        // Don't throw error, let app continue with current session
+        return response;
       }
-    }
-    
-    if (urlStr.includes('127.0.0.1:54321/rest/v1/tenants') && !response.ok) {
-      console.error('Tenants request failed:', {
-        status: response.status,
-        statusText: response.statusText,
-        url: urlStr
-      });
       
-      // For 401 errors, return empty array to prevent crashes
-      if (response.status === 401) {
-        return new Response(JSON.stringify([]), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' }
+      if (urlStr.includes('/rest/v1/monthly_billing') && !response.ok) {
+        console.error('Monthly billing request failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          url: urlStr,
+          method: options?.method
         });
+        
+        // Only return mock response for GET requests (queries), not for POST/PUT/DELETE (mutations)
+        if (response.status === 400 && (!options?.method || options.method === 'GET')) {
+          return new Response(JSON.stringify([]), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+      }
+      
+      if (urlStr.includes('/rest/v1/tenants') && !response.ok) {
+        console.error('Tenants request failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          url: urlStr
+        });
+        
+        // For 401 errors, return empty array to prevent crashes
+        if (response.status === 401) {
+          return new Response(JSON.stringify([]), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
       }
     }
     
     return response;
   } catch (error) {
-    if (urlStr.includes('127.0.0.1:54321/auth/v1/token?grant_type=refresh_token')) {
-      console.warn('Token refresh request failed:', error);
-      // Return a mock response to prevent app crashes
-      return new Response(JSON.stringify({ error: 'Token refresh failed' }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-    
-    // For other errors, return empty data to prevent crashes
-    if (urlStr.includes('127.0.0.1:54321/rest/v1/')) {
-      return new Response(JSON.stringify([]), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-      });
+    // Only add error handling for local development
+    if (urlStr.includes('127.0.0.1:54321')) {
+      if (urlStr.includes('/auth/v1/token?grant_type=refresh_token')) {
+        console.warn('Token refresh request failed:', error);
+        // Return a mock response to prevent app crashes
+        return new Response(JSON.stringify({ error: 'Token refresh failed' }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      
+      // For other errors, return empty data to prevent crashes
+      if (urlStr.includes('/rest/v1/')) {
+        return new Response(JSON.stringify([]), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
     }
     
     throw error;

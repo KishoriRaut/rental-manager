@@ -90,7 +90,7 @@ export default function Houses() {
     },
   });
 
-  const filtered = houses.filter(h => h.name.toLowerCase().includes(search.toLowerCase()) || h.address.toLowerCase().includes(search.toLowerCase()));
+  const filtered = houses.filter(h => h && (h.name?.toLowerCase().includes(search.toLowerCase()) || h.address?.toLowerCase().includes(search.toLowerCase())));
 
   const openEdit = (h: House) => {
     setEditing(h);

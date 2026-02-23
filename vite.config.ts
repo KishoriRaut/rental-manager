@@ -18,15 +18,14 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
+      includeAssets: ["favicon.ico"],
       manifest: {
         name: "RentManager - Property Management",
         short_name: "RentManager",
-        description: "Complete rental property management system with billing, tenants, and houses management",
+        description: "Complete rental property management system",
         theme_color: "#0f172a",
         background_color: "#ffffff",
         display: "standalone",
-        orientation: "portrait",
         scope: "/",
         start_url: "/",
         icons: [
@@ -39,12 +38,6 @@ export default defineConfig(({ mode }) => ({
             src: "pwa-512x512.png",
             sizes: "512x512",
             type: "image/png"
-          },
-          {
-            src: "pwa-512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any maskable"
           }
         ]
       },
@@ -64,8 +57,7 @@ export default defineConfig(({ mode }) => ({
           }
         ]
       },
-      strategies: "generateSW",
-      injectRegister: 'auto'
+      strategies: "generateSW"
     })
   ].filter(Boolean),
   resolve: {

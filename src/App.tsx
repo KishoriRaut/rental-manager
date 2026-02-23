@@ -51,10 +51,13 @@ const App = () => {
 
     // Listen for install prompt
     const handleBeforeInstallPrompt = (e: any) => {
-      console.log('beforeinstallprompt event fired');
+      console.log('beforeinstallprompt event fired', e);
+      // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
+      // Stash the event so it can be triggered later
       setDeferredPrompt(e);
       setShowInstallButton(true);
+      console.log('Install prompt stashed');
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -74,16 +77,29 @@ const App = () => {
   }, []);
 
   const handleInstallClick = async () => {
+    console.log('Install button clicked, deferredPrompt:', !!deferredPrompt);
+    
     if (deferredPrompt) {
       console.log('Showing install prompt');
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log(`User response to the install prompt: ${outcome}`);
-      setDeferredPrompt(null);
-      setShowInstallButton(false);
+      try {
+        // Show the install prompt
+        deferredPrompt.prompt();
+        
+        // Wait for the user's response
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to install prompt: ${outcome}`);
+        
+        // Clear the deferred prompt
+        setDeferredPrompt(null);
+        setShowInstallButton(false);
+      } catch (error) {
+        console.error('Error during install prompt:', error);
+        // Show manual instructions if prompt fails
+        alert('To install this app:\n\n1. Chrome/Edge: Click the install icon (⚡) in the address bar\n2. Safari: Share > Add to Home Screen\n3. Refresh and try again');
+      }
     } else {
       console.log('No deferred prompt available, showing manual install instructions');
-      alert('To install this app:\n\n1. Chrome/Edge: Click the install icon in the address bar\n2. Safari: Share > Add to Home Screen\n3. Or refresh the page and try again');
+      alert('To install this app:\n\n1. Chrome/Edge: Look for install icon (⚡) in address bar\n2. Safari: Share > Add to Home Screen\n3. Make sure you\'re using HTTPS\n4. Try refreshing the page');
     }
   };
 

@@ -25,8 +25,19 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 const App = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstallButton, setShowInstallButton] = useState(false);
+  const [isPWA, setIsPWA] = useState(false);
 
   useEffect(() => {
+    // Check if already installed as PWA
+    const isInStandaloneMode = () => {
+      return window.matchMedia('(display-mode: standalone)').matches || 
+             (window.navigator as any).standalone || 
+             document.referrer.includes('android-app://');
+    };
+    
+    setIsPWA(isInStandaloneMode());
+    console.log('Is PWA:', isInStandaloneMode());
+
     // Register PWA service worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js')
@@ -40,6 +51,7 @@ const App = () => {
 
     // Listen for install prompt
     const handleBeforeInstallPrompt = (e: any) => {
+      console.log('beforeinstallprompt event fired');
       e.preventDefault();
       setDeferredPrompt(e);
       setShowInstallButton(true);
@@ -47,18 +59,31 @@ const App = () => {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
+    // Also check if we can show install button based on browser support
+    const timer = setTimeout(() => {
+      if (!deferredPrompt && !isInStandaloneMode()) {
+        console.log('No install prompt detected, showing debug install button');
+        setShowInstallButton(true);
+      }
+    }, 3000);
+
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      clearTimeout(timer);
     };
   }, []);
 
   const handleInstallClick = async () => {
     if (deferredPrompt) {
+      console.log('Showing install prompt');
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       console.log(`User response to the install prompt: ${outcome}`);
       setDeferredPrompt(null);
       setShowInstallButton(false);
+    } else {
+      console.log('No deferred prompt available, showing manual install instructions');
+      alert('To install this app:\n\n1. Chrome/Edge: Click the install icon in the address bar\n2. Safari: Share > Add to Home Screen\n3. Or refresh the page and try again');
     }
   };
 
@@ -67,18 +92,31 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        {showInstallButton && (
+        {showInstallButton && !isPWA && (
           <div className="fixed top-4 right-4 z-50 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
-            <span className="text-sm font-medium">Install App</span>
+            <span className="text-sm font-medium">
+              {deferredPrompt ? 'Install App' : 'Install PWA'}
+            </span>
             <button
               onClick={handleInstallClick}
               className="bg-white text-blue-600 px-3 py-1 rounded text-sm font-medium hover:bg-blue-50 transition-colors"
             >
-              Install
+              {deferredPrompt ? 'Install' : 'How?'}
             </button>
             <button
               onClick={() => setShowInstallButton(false)}
               className="ml-2 text-white hover:text-blue-200"
+            >
+              ×
+            </button>
+          </div>
+        )}
+        {isPWA && (
+          <div className="fixed top-4 right-4 z-50 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
+            <span className="text-sm font-medium">✓ Installed as App</span>
+            <button
+              onClick={() => setShowInstallButton(false)}
+              className="ml-2 text-white hover:text-green-200"
             >
               ×
             </button>

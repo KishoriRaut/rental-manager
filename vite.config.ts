@@ -52,21 +52,19 @@ export default defineConfig(({ mode }) => ({
         globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/knjxneabeamgmtmjysqo\.supabase\.co\/.*/,
+            urlPattern: /^https:\/\/.*\.supabase\.co\/.*/,
             handler: "NetworkFirst",
             options: {
               cacheName: "supabase-api",
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 // 24 hours
-              },
-              cacheKeyWillBeUsed: async ({ request }) => {
-                return `${request.url}?v=1`;
+                maxAgeSeconds: 60 * 60 * 24
               }
             }
           }
         ]
-      }
+      },
+      strategies: "generateSW"
     })
   ].filter(Boolean),
   resolve: {

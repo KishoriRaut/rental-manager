@@ -30,14 +30,14 @@ export default defineConfig(({ mode }) => ({
         start_url: "/",
         icons: [
           {
-            src: "pwa-192x192.png",
+            src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm5ldD0iMC4wIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzBmNzJhIi8+PC9zdmc+",
             sizes: "192x192",
-            type: "image/png"
+            type: "image/svg+xml"
           },
           {
-            src: "pwa-512x512.png",
+            src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm5ldD0iMC4wIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzBmNzJhIi8+PC9zdmc+",
             sizes: "512x512",
-            type: "image/png"
+            type: "image/svg+xml"
           }
         ]
       },
